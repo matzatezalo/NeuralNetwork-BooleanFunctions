@@ -8,7 +8,7 @@ from util import bce_loss
 from util import sigmoid_deriv
 
 class TinyMLP:
-    def __init__(self, in_dim=2, hidden=2):
+    def __init__(self, in_dim=2, hidden=3):
         self.W1 = np.random.randn(in_dim, hidden) * 0.1
         self.b1 = np.zeros((1, hidden))
         self.W2 = np.random.randn(hidden, 1) * 0.1
@@ -41,6 +41,7 @@ class TinyMLP:
             self.b2 -= lr * grad_b2
             self.W1 -= lr * grad_W1
             self.b1 -= lr * grad_b1
+
         return bce_loss(self.forward(X), t)
     
     # Return hidden layer activations σ(z₁) for given inputs X

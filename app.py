@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 from models.linear_perceptron import Perceptron
 from models.tiny_mlp import TinyMLP
+from util import plot_boundary
 
 np.random.seed(42);
 
@@ -41,14 +42,25 @@ def main():
         print(f"{model.__name__:10} on XOR: "
                   f"accuracy = {acc}, predictions = {preds}, loss = {loss}")
         
-    print("----------")
-    # --- Analyse representations ---
+        
+    print("-----------------------")
+    # ---- Analyse representations ----
 
     # Display hidden-layer activations for XOR
     mlp = TinyMLP()
     mlp.fit(X, y["XOR"], lr = 0.2, epochs = 20000)
     hidden = mlp.hidden(X)       
     print("Hidden activations:\n", np.round(hidden, 3))
+
+    print("-----------------------")
+    # Display weights
+    print("W1:", np.round(mlp.W1, 3))
+    print("W2:", np.round(mlp.W2.ravel(), 3))
+
+    print("-----------------------")
+    # Plot decision regions
+    # plot_boundary(perceptron, "Perceptron (fails on XOR)")
+    plot_boundary(mlp, "MLP learned XOR boundary")
 
 
 if __name__ == "__main__":        
