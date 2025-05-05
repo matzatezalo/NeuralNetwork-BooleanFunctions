@@ -6,6 +6,15 @@ from models.tiny_mlp import TinyMLP
 
 np.random.seed(42);
 
+def run(X, y, model, gate_name, lr, epochs):
+    network = model
+    loss = network.fit(X, y[gate_name], lr, epochs)
+    
+    preds = network.predict(X).ravel().tolist()
+    acc = (np.array(preds) == y[gate_name].ravel()).mean()
+
+    return loss, preds, acc
+
 def main():
     X = np.array([[0, 0],
               [0, 1],
@@ -13,9 +22,18 @@ def main():
               [1, 1]], dtype=float)              # shape (4,2)
 
     # Target is 4x1 so we can feed it to binary cross-entropy
-    y_and = np.array([[0], [0], [0], [1]], dtype=float)
-    y_or  = np.array([[0], [1], [1], [1]], dtype=float)
-    y_xor = np.array([[0], [1], [1], [0]], dtype=float)
+    y = {
+        "AND": np.array([[0], [0], [0], [1]], dtype=float),
+        "OR" : np.array([[0], [1], [1], [1]], dtype=float),
+        "XOR": np.array([[0], [1], [1], [0]], dtype=float)
+    }
+
+    for gate in ["AND", "OR"]:
+        for model in [Perceptron, TinyMLP]:
+            loss, acc, preds = run(Model, gate)
+            print(f"{Model.__name__:10} on {gate}: acc={acc:.1f}, preds={preds}")
+
+    
 
     
 
