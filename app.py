@@ -7,7 +7,7 @@ from models.tiny_mlp import TinyMLP
 np.random.seed(42);
 
 def run(X, y, model, gate_name, lr, epochs):
-    network = model
+    network = model()
     loss = network.fit(X, y[gate_name], lr, epochs)
     
     preds = network.predict(X).ravel().tolist()
@@ -30,12 +30,20 @@ def main():
 
     for gate in ["AND", "OR"]:
         for model in [Perceptron, TinyMLP]:
-            loss, acc, preds = run(X, y, model, gate, 0.1, 10000)
-            print(f"{model.__name__:10} on {gate}: accuracy = {acc:.1f}, predictions = {preds}")
+            loss, preds, acc = run(X, y, model, gate, 0.1, 10000)
+            print(f"{model.__name__:10} on {gate}: "
+                  f"accuracy = {acc}, predictions = {preds}")
 
-    # XOR for MLP
-    loss, acc, preds = run(X, y, TinyMLP, "XOR", 0.1, 10000)
-    print(f"{model.__name__:10} on {gate}: accuracy = {acc:.1f}, predictions = {preds}")
+    # XOR separated to see the difference in models
+    print("\nXOR test")
+    for model in [Perceptron, TinyMLP]:
+        loss, preds, acc = run(X, y, model, "XOR", 0.1, 10000)
+        print(f"{model.__name__:10} on XOR: "
+                  f"accuracy = {acc}, predictions = {preds}")
+
+
+if __name__ == "__main__":        
+    main()
 
     
 
