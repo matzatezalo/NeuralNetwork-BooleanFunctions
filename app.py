@@ -30,10 +30,12 @@ def main():
 
     for gate in ["AND", "OR"]:
         for model in [Perceptron, TinyMLP]:
-            loss, acc, preds = run(Model, gate)
-            print(f"{Model.__name__:10} on {gate}: acc={acc:.1f}, preds={preds}")
+            loss, acc, preds = run(X, y, model, gate, 0.1, 10000)
+            print(f"{model.__name__:10} on {gate}: accuracy = {acc:.1f}, predictions = {preds}")
 
-    
+    # XOR for MLP
+    loss, acc, preds = run(X, y, TinyMLP, "XOR", 0.1, 10000)
+    print(f"{model.__name__:10} on {gate}: accuracy = {acc:.1f}, predictions = {preds}")
 
     
 
