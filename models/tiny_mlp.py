@@ -15,7 +15,7 @@ class TinyMLP:
         self.b2 = np.zeros((1, 1))
 
     def forward(self, X):
-        self.z1 = X @ self.W1 + self.b1          # cache for back‑prop
+        self.z1 = X @ self.W1 + self.b1          
         self.a1 = sigmoid(self.z1)
         self.z2 = self.a1 @ self.W2 + self.b2
         self.p  = sigmoid(self.z2)
@@ -42,6 +42,12 @@ class TinyMLP:
             self.W1 -= lr * grad_W1
             self.b1 -= lr * grad_b1
         return bce_loss(self.forward(X), t)
+    
+    # Return hidden layer activations σ(z₁) for given inputs X
+    # To analyse what each neuron learns
+    def hidden(self, X):
+        z1 = X @ self.W1 + self.b1          # pre‑activation
+        return sigmoid(z1)                  # post‑activation
 
     def predict(self, X):
         return (self.forward(X) > 0.5).astype(int)

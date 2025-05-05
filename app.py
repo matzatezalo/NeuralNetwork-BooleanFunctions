@@ -30,16 +30,25 @@ def main():
 
     for gate in ["AND", "OR"]:
         for model in [Perceptron, TinyMLP]:
-            loss, preds, acc = run(X, y, model, gate, 0.1, 10000)
+            loss, preds, acc = run(X, y, model, gate, 0.2, 20000)
             print(f"{model.__name__:10} on {gate}: "
-                  f"accuracy = {acc}, predictions = {preds}")
+                  f"accuracy = {acc}, predictions = {preds}, loss = {loss}")
 
     # XOR separated to see the difference in models
     print("\nXOR test")
     for model in [Perceptron, TinyMLP]:
-        loss, preds, acc = run(X, y, model, "XOR", 0.1, 10000)
+        loss, preds, acc = run(X, y, model, "XOR", 0.2, 20000)
         print(f"{model.__name__:10} on XOR: "
-                  f"accuracy = {acc}, predictions = {preds}")
+                  f"accuracy = {acc}, predictions = {preds}, loss = {loss}")
+        
+    print("----------")
+    # --- Analyse representations ---
+
+    # Display hidden-layer activations for XOR
+    mlp = TinyMLP()
+    mlp.fit(X, y["XOR"], lr = 0.2, epochs = 20000)
+    hidden = mlp.hidden(X)       
+    print("Hidden activations:\n", np.round(hidden, 3))
 
 
 if __name__ == "__main__":        
