@@ -23,8 +23,15 @@ class TinyMLP:
         self.z2 = self.a1 @ self.W2 + self.b2
         self.p  = sigmoid(self.z2)
         return self.p
+    
+    def add_noise(X, prob_flip=0.1, seed=None):
+        # Flip each bit with 10% probability - prob_flip
+        rng = np.random.default_rng(seed)
+        Xn = X.copy()
+        flips = rng.random(X.shape) < prob_flip
+        return np.where(flips, 1 - Xn, Xn)
 
-    def fit(self, X, t, lr=0.1, epochs=10_000, snapshot=500):
+    def fit(self, X, t, lr=0.1, epochs=20_000, snapshot=1000, wd=0.0):
         n = len(X)
         for epoch in range(1, epochs + 1):
             p = self.forward(X)
@@ -38,6 +45,10 @@ class TinyMLP:
             dL_dz1 = dL_da1 * sigmoid_deriv(self.a1)
             grad_W1 = X.T @ dL_dz1               # (in_dim,hidden)
             grad_b1 = dL_dz1.sum(axis=0, keepdims=True)
+
+            # Apply L2 regularization to gradients (0 for clean, no noise model)
+            grad_W1 += wd * self.W1
+            grad_W2 += wd * self.W2
 
             # Stochastic gradient descent
             self.W2 -= lr * grad_W2
