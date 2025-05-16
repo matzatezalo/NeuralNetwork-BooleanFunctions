@@ -13,6 +13,9 @@ class TinyMLP:
         self.b1 = np.zeros((1, hidden))
         self.W2 = np.random.randn(hidden, 1) * 0.1
         self.b2 = np.zeros((1, 1))
+        
+        # To store hidden activations over time
+        self.hist = []
 
     def forward(self, X):
         self.z1 = X @ self.W1 + self.b1          
@@ -21,9 +24,9 @@ class TinyMLP:
         self.p  = sigmoid(self.z2)
         return self.p
 
-    def fit(self, X, t, lr=0.1, epochs=10_000):
+    def fit(self, X, t, lr=0.1, epochs=10_000, snapshot=500):
         n = len(X)
-        for _ in range(epochs):
+        for epoch in range(1, epochs + 1):
             p = self.forward(X)
 
             # Backward pass
@@ -41,6 +44,11 @@ class TinyMLP:
             self.b2 -= lr * grad_b2
             self.W1 -= lr * grad_W1
             self.b1 -= lr * grad_b1
+
+            # Record hidden activations at every 'snapshot'
+            if epoch % snapshot == 0 or epoch == epochs:
+                # Store the copy so later mutations do not overwrite
+                self.hist.append(self.a1.copy())
 
         return bce_loss(self.forward(X), t)
     
