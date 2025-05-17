@@ -13,6 +13,13 @@ def bce_loss(p, t):
     p = np.clip(p, 1e-9, 1-1e-9)          # to avoid log(0)
     return -(t*np.log(p) + (1-t)*np.log(1-p)).mean()
 
+def add_noise(X, prob_flip=0.1, seed=None):
+        # Flip each bit with 10% probability - prob_flip
+        rng = np.random.default_rng(seed)
+        Xn = X.copy()
+        flips = rng.random(X.shape) < prob_flip
+        return np.where(flips, 1 - Xn, Xn)
+
 def plot_boundary(model, title="", h=0.01, padding=0.5):
     """
     Visualise the model's 0/1 decision regions in 2D.

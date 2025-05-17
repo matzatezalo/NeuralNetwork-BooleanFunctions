@@ -23,13 +23,6 @@ class TinyMLP:
         self.z2 = self.a1 @ self.W2 + self.b2
         self.p  = sigmoid(self.z2)
         return self.p
-    
-    def add_noise(X, prob_flip=0.1, seed=None):
-        # Flip each bit with 10% probability - prob_flip
-        rng = np.random.default_rng(seed)
-        Xn = X.copy()
-        flips = rng.random(X.shape) < prob_flip
-        return np.where(flips, 1 - Xn, Xn)
 
     def fit(self, X, t, lr=0.1, epochs=20_000, snapshot=1000, wd=0.0):
         n = len(X)

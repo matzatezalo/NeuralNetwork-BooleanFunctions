@@ -14,7 +14,7 @@ class Perceptron:
     def forward(self, X):
         return sigmoid(X @ self.W + self.b)
 
-    def fit(self, X, t, lr=0.1, epochs=10_000):
+    def fit(self, X, t, lr=0.1, epochs=10_000, snapshots = 500, wd=0.0):
         n = len(X)
         for _ in range(epochs):
             p = self.forward(X)
