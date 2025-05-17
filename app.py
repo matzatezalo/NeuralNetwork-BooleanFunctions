@@ -98,6 +98,11 @@ def main():
 
     fig, ax = plt.subplots(figsize=(4,4))
 
+    var1, var2 = pca.explained_variance_ratio_
+    ax.set_xlabel(f"PC1 ({var1:.1%} var)")
+    ax.set_ylabel(f"PC2 ({var2:.1%} var)")
+    ax.set_title("Hidden-space PCA (XOR)")
+
     # Scatter with bigger points and edgecolor
     ax.scatter(proj[:,0], proj[:,1],
             c=colors, s=120,
@@ -131,6 +136,12 @@ def main():
 
     def update_frame(frame_index):
         ax.clear()
+
+        # Redraw the static labels
+        ax.set_xlabel(f"PC1 ({var1:.1%} var)")
+        ax.set_ylabel(f"PC2 ({var2:.1%} var)")
+        ax.set_title(f"Epoch {(frame_index+1)*1000}")
+
         H = mlp.hist[frame_index]
         proj = pca.transform(H)
         ax.scatter(proj[:,0], proj[:,1], c=colors, s=80, edgecolor="k")
@@ -174,10 +185,6 @@ def main():
     plt.tight_layout()
     plt.show()
 
-    # Loss, accuracy and predictions for noisy data (for XOR)
-    loss_noisy, preds_noisy, acc_noisy = run(X_noisy, y, TinyMLP, "XOR", lr=0.2, epochs=20000, wd=0.1)
-    print(f"Noisy data with weight-decay=0.1  loss={loss_noisy:.3f}, predictions_noisy={preds_noisy},  acc={acc_noisy:.2f}")
-
     np.random.seed(42)
 
     """
@@ -188,6 +195,10 @@ def main():
 
     # Produce noisy data for analysis (10% flips)
     X_noisy = add_noise(X, prob_flip=0.1, seed=42)
+
+    # Loss, accuracy and predictions for noisy data (for XOR)
+    loss_noisy, preds_noisy, acc_noisy = run(X_noisy, y, TinyMLP, "XOR", lr=0.2, epochs=20000, wd=0.1)
+    print(f"Noisy data with weight-decay=0.1  loss={loss_noisy:.3f}, predictions_noisy={preds_noisy},  acc={acc_noisy:.2f}")
 
     # Train 4 models: (clean vs noisy) × (wd=0.0 vs wd=0.1)
     experiments = []
