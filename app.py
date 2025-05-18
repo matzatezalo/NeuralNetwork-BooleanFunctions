@@ -56,14 +56,15 @@ def main():
     # Get models
     for gate in ["AND", "OR"]:
         for model in [Perceptron, TinyMLP]:
-            loss, preds, acc = run(X, y, model, gate, 0.2, 20000, 0.0)
+            loss, preds, acc = run(X, y, model, gate, 0.1, 20000, 0.0)
             print(f"{model.__name__:10} on {gate}: "
                   f"accuracy = {acc}, predictions = {preds}, loss = {loss}")
 
+    np.random.seed(42);
     # XOR separated to see the difference in models
     print("\nXOR test")
     for model in [Perceptron, TinyMLP]:
-        loss, preds, acc = run(X, y, model, "XOR", 0.2, 20000, 0.0)
+        loss, preds, acc = run(X, y, model, "XOR", 0.1, 20000, 0.0)
         print(f"{model.__name__:10} on XOR: "
                   f"accuracy = {acc}, predictions = {preds}, loss = {loss}")
         
@@ -72,7 +73,7 @@ def main():
 
     # Display hidden-layer activations for XOR
     mlp = TinyMLP()
-    mlp.fit(X, y["XOR"], lr = 0.2, epochs = 20000, snapshot = 1000, wd = 0.0)
+    mlp.fit(X, y["XOR"], lr = 0.1, epochs = 20000, snapshot = 1000, wd = 0.0)
     hidden = mlp.hidden(X)       
     print("Hidden activations:\n", np.round(hidden, 3))
     H_final = mlp.hist[-1]
@@ -185,8 +186,6 @@ def main():
     plt.tight_layout()
     plt.show()
 
-    np.random.seed(42)
-
     """
         2x2 grid to compare differences in PCA and W1 heat-map grids
         between clean and noisy XOR inputs
@@ -196,18 +195,20 @@ def main():
     # Produce noisy data for analysis (10% flips)
     X_noisy = add_noise(X, prob_flip=0.1, seed=42)
 
+    np.random.seed(42)
     # Loss, accuracy and predictions for noisy data (for XOR)
-    loss_noisy, preds_noisy, acc_noisy = run(X_noisy, y, TinyMLP, "XOR", lr=0.2, epochs=20000, wd=0.1)
+    loss_noisy, preds_noisy, acc_noisy = run(X_noisy, y, TinyMLP, "XOR", lr=0.1, epochs=20000, wd=0.1)
     print(f"Noisy data with weight-decay=0.1  loss={loss_noisy:.3f}, predictions_noisy={preds_noisy},  acc={acc_noisy:.2f}")
 
     # Train 4 models: (clean vs noisy) × (wd=0.0 vs wd=0.1)
     experiments = []
     for data_label, X_data in [("Clean", X_clean), ("Noisy", X_noisy)]:
         for wd in [0.0, 0.1]:
+            #np.random.seed(42)
             net = TinyMLP(hidden=3)
             net.fit(
                 X_data, y["XOR"],
-                lr=0.2,
+                lr=0.1,
                 epochs=20000,
                 snapshot=1000,
                 wd=wd
