@@ -85,7 +85,17 @@ def main():
 
     print("-----------------------")
     # Plot decision regions
-    # plot_boundary(perceptron, "Perceptron (fails on XOR)")
+    perceptron_and = Perceptron()
+    perceptron_and.fit(X, y["AND"])
+
+    perceptron_or = Perceptron()
+    perceptron_or.fit(X, y["OR"])
+
+    perceptron_xor = Perceptron()
+    perceptron_xor.fit(X, y["XOR"])
+
+    plot_boundary(perceptron_and, "Perceptron on AND boundary")
+    plot_boundary(perceptron_xor, "Perceptron (fails on XOR)")
     plot_boundary(mlp, "MLP learned XOR boundary")
 
     # Run PCA 
