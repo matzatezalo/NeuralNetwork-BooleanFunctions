@@ -95,6 +95,7 @@ def main():
     perceptron_xor.fit(X, y["XOR"])
 
     plot_boundary(perceptron_and, "Perceptron on AND boundary")
+    plot_boundary(perceptron_or, "Perceptron on OR boundary")
     plot_boundary(perceptron_xor, "Perceptron (fails on XOR)")
     plot_boundary(mlp, "MLP learned XOR boundary")
 
