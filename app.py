@@ -201,6 +201,7 @@ def main():
         2x2 grid to compare differences in PCA and W1 heat-map grids
         between clean and noisy XOR inputs
     """
+    
     X_clean = X.copy()
 
     # Produce noisy data for analysis (10% flips)
